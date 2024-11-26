@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  username    String @unique
+  email       String @unique
+  password    String 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile     Profile?
+  posts       Post[]
+  connections   Connection?
+  comments    Comments[]
+  
+}
+
+model Profile{
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    image       String? @default("https://res.cloudinary.com/dqng5mxpt/image/upload/v1728698570/social-media/user/yqfth3iny2q9f2znmzjb.jpg")
+    cover       String? @default("https://res.cloudinary.com/dqng5mxpt/image/upload/v1729850117/social-media/user/a8wsdgp9qhn79bafotgf.jpg")
+    bio         String?
+    address     Json?
+    education   Json?
+    link        String?
+    occupation  Json?
+    dob         Json?
+    hobies      String[]
+    userId      String @unique @db.ObjectId
+    user        User @relation(fields: [userId], references: [id])
+
+}
+
+model Post {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  content     String?
+  images      String[]
+  shareId     String? @db.ObjectId @unique
+  share       Post[] @relation("share")
+  sharedPost  Post? @relation("share", fields: [shareId], references: [id], onDelete : NoAction,onUpdate : NoAction)
+  creatorId   String @db.ObjectId
+  user        User @relation(fields: [creatorId],references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  likes       Likes?
+  comments    Comments[]
+  commentCount  Int @default(0)
+  mentions    Mention?
+}
+
+model Mention{
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    postId      String  @db.ObjectId @unique
+    post        Post @relation(fields: [postId], references: [id])
+    users       Json[] 
+}
+
+model Likes {
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    likeCount   Int @default(0)
+    postId      String @db.ObjectId @unique
+    post        Post @relation(fields: [postId], references: [id])
+    likes       String[]
+    
+}
+
+model Comments{
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  text        String
+  postId      String @db.ObjectId 
+  post        Post @relation(fields: [postId],references: [id])
+  userId      String @db.ObjectId
+  user        User @relation(fields: [userId], references: [id])
+  isReplied   Boolean @default(false)
+  replies     Comments[] @relation("R")
+  parentCommentId String?    @db.ObjectId
+  parentComment   Comments?  @relation("R", fields: [parentCommentId], references: [id],onDelete: NoAction, onUpdate: NoAction)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+}
+
+model Connection {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String @unique @db.ObjectId
+  user          User @relation(fields: [userId], references: [id])  
+  followers     String[] @db.ObjectId
+  following     String[] @db.ObjectId
+}

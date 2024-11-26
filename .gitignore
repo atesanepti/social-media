@@ -1,0 +1,71 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Optional npm cache directory
+.npm/
+
+# Environment variable files
+.env
+.env.* 
+
+# Temporary files
+tmp/
+temp/
+*.swp
+*.swo
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Tests coverage reports
+coverage/
+
+# Logs for debugging tools
+*.log
+*.trace
+
+# Yarn Integrity
+.yarn-integrity
+.yarn/
+
+# Next.js files
+.next/
+.vercel/
+.vite/
+
+# Parcel cache
+.cache/
+
+# Typescript build
+*.tsbuildinfo
+
+# Miscellaneous
+*.lock
+*.bak
+*.orig
